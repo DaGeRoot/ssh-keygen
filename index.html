@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>SSH Key Generator</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: '#3b82f6',
+            accent: '#1e40af'
+          }
+        }
+      }
+    };
+  </script>
+</head>
+<body class="bg-gradient-to-tr from-blue-100 via-white to-blue-200 dark:from-gray-800 dark:via-gray-900 dark:to-gray-800 min-h-screen flex flex-col font-sans transition-all">
+
+  <header id="header" class="w-full bg-white dark:bg-gray-900 border-b border-blue-200 dark:border-gray-700 py-4 px-6 shadow z-10"></header>
+
+  <main class="flex-1 flex items-center justify-center p-6">
+    <div class="bg-white dark:bg-gray-900 rounded-3xl shadow-2xl p-8 w-full max-w-3xl border border-blue-200 dark:border-gray-700">
+      <div class="mb-6 text-center">
+        <h2 id="title" class="text-3xl font-extrabold text-blue-700 dark:text-blue-300">🔑 SSH Key Generator</h2>
+      </div>
+      <div class="flex justify-center mb-6">
+        <button id="generateBtn" onclick="generateKeys()" class="bg-primary hover:bg-accent text-white font-medium py-3 px-6 rounded-xl transition-all shadow-md">
+          🔁 Generate New Keys
+        </button>
+      </div>
+      <div>
+        <h3 id="publicKeyLabel" class="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">Public Key</h3>
+        <pre id="publicKey" class="bg-blue-50 dark:bg-gray-800 border border-blue-200 dark:border-gray-700 p-4 rounded-xl text-sm overflow-auto mb-6 whitespace-pre-wrap">Click the button to generate.</pre>
+        <h3 id="privateKeyLabel" class="text-lg font-bold text-gray-700 dark:text-gray-300 mb-2">Private Key</h3>
+        <pre id="privateKey" class="bg-blue-50 dark:bg-gray-800 border border-blue-200 dark:border-gray-700 p-4 rounded-xl text-sm overflow-auto whitespace-pre-wrap">Click the button to generate.</pre>
+      </div>
+    </div>
+  </main>
+
+  <footer id="footer" class="w-full bg-white dark:bg-gray-900 border-t border-blue-200 dark:border-gray-700 py-6 px-4 text-center text-sm text-gray-500 dark:text-gray-400"></footer>
+
+  <script src="/layouts.js"></script>
+
+  <script>
+    async function generateKeys() {
+      try {
+        const response = await fetch('/generate');
+        const data = await response.json();
+        document.getElementById('publicKey').textContent = data.public_key;
+        document.getElementById('privateKey').textContent = data.private_key;
+      } catch (error) {
+        alert('Error generating keys: ' + error.message);
+      }
+    }
+
+    const texts = {
+      en: {
+        title: "🔑 SSH Key Generator",
+        generateBtn: "🔁 Generate New Keys",
+        publicKeyLabel: "Public Key",
+        privateKeyLabel: "Private Key",
+        clickToGenerate: "Click the button to generate."
+      },
+      zh: {
+        title: "🔑 SSH 密钥生成器",
+        generateBtn: "🔁 生成新密钥",
+        publicKeyLabel: "公钥",
+        privateKeyLabel: "私钥",
+        clickToGenerate: "点击按钮生成密钥。"
+      },
+      es: {
+        title: "🔑 Generador de Claves SSH",
+        generateBtn: "🔁 Generar Nuevas Claves",
+        publicKeyLabel: "Clave Pública",
+        privateKeyLabel: "Clave Privada",
+        clickToGenerate: "Haz clic en el botón para generar."
+      },
+      fr: {
+        title: "🔑 Générateur de Clés SSH",
+        generateBtn: "🔁 Générer de Nouvelles Clés",
+        publicKeyLabel: "Clé Publique",
+        privateKeyLabel: "Clé Privée",
+        clickToGenerate: "Cliquez sur le bouton pour générer."
+      },
+      de: {
+        title: "🔑 SSH-Schlüsselgenerator",
+        generateBtn: "🔁 Neue Schlüssel Generieren",
+        publicKeyLabel: "Öffentlicher Schlüssel",
+        privateKeyLabel: "Privater Schlüssel",
+        clickToGenerate: "Klicken Sie auf die Schaltfläche, um zu generieren."
+      },
+      ja: {
+        title: "🔑 SSHキー生成ツール",
+        generateBtn: "🔁 新しいキーを生成",
+        publicKeyLabel: "公開鍵",
+        privateKeyLabel: "秘密鍵",
+        clickToGenerate: "ボタンをクリックして生成します。"
+      }
+    };
+
+    let currentLang = language;
+    let t = texts[currentLang];
+
+    window.addEventListener('DOMContentLoaded', () => {
+      updateLanguage(t);
+    });
+
+    function updateLanguage(t) {
+      document.getElementById('title').textContent = t.title;
+      document.getElementById('generateBtn').textContent = t.generateBtn;
+      document.getElementById('publicKeyLabel').textContent = t.publicKeyLabel;
+      document.getElementById('privateKeyLabel').textContent = t.privateKeyLabel;
+      document.getElementById('publicKey').textContent = t.clickToGenerate;
+      document.getElementById('privateKey').textContent = t.clickToGenerate;
+    }
+
+    // This function could be triggered when the user selects a new language
+    function eventLanguageChanged(newLang) {
+      currentLang = newLang;
+      t = texts[currentLang] || texts.en;
+      updateLanguage(t);
+    }
+  </script>
+</body>
+</html>
